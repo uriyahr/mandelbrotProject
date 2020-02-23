@@ -23,6 +23,33 @@
     console.log('hello')
   in server run npm start...
 
+# Start Mandelbrot
+  Mandelbrot Fractal Zoom
+
+# ESLint is the Enemey
+  ...Eventually Removed ESLINT from code
+  In client/build/webpack.base.conf.js
+
+  comment out
+  // const createLintingRule = () => ({
+  //   test: /\.(js|vue)$/,
+  //   loader: 'eslint-loader',
+  //   enforce: 'pre',
+  //   include: [resolve('src'), resolve('test')],
+  //   options: {
+  //       formatter: require('eslint-friendly-formatter'),
+  //     emitWarning: !config.dev.showEslintErrorsInOverlay
+  //   }
+  // })
+
+  and
+
+        // ...(config.dev.useEslint ? [createLintingRule()] : []),
+
+
+
+
+
 
 
 
