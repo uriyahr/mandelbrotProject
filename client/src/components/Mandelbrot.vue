@@ -12,7 +12,6 @@
         </li>
       </ul>
     </div>
-    <canvas id="canvas"></canvas><br/>
     <button>Incremenet Zoom</button>
     <button>Decrement Zoom</button>
     <button>Reset Mandelbrot</button>
@@ -56,73 +55,37 @@ export default {
     };
   },
   mounted() {
-    // function mandelIteration(cx, cy, maxIter) {
-    //   var x = 0.0;
-    //   var y = 0.0;
-    //   var xx = 0;
-    //   var yy = 0;
-    //   var xy = 0;
+    var canvas = document.createElement("canvas")
+    canvas.width = 600;
+    canvas.height = 600;
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
 
-    //   var i = maxIter;
-    //   while (i-- && xx + yy <= 4) {
-    //     xy = x * y;
-    //     xx = x * x;
-    //     yy = y * y;
-    //     x = xx - yy + cx;
-    //     y = xy + xy + cy;
-    //   }
-    //   return maxIter - 1;
-    // }
-    // function mandelbrot(canvas, xmin, xmax, ymin, ymax, iterations) {
-    //   var width = canvas.width;
-    //   var height = canvas.height;
+    function inMandelbrotSet(xAx, yAx) {
+      var realCompResult = xAx;
+      var imaginaryCompResult = yAx;
 
-    //   var ctx = canvas.getContext('2d');
-    //   var img = ctx.getImageData(0, 0, width, height);
-    //   var pix = img.data;
-
-    //   for (var ix = 0; ix < width; ++ix) {
-    //     for (var iy = 0; iy < height; ++iy) {
-    //       var x = xmin + ((xmax - xmin) * ix) / (width - 1);
-    //       var y = ymin + ((ymax - ymin) * iy) / (height - 1);
-    //       var i = mandelIteration(x, y, iterations);
-    //       var ppos = 4 * (width * iy + ix);
-
-    //       if (i > iterations) {
-    //         pix[ppos] = 0;
-    //         pix[ppos + 1] = 0;
-    //         pix[ppos + 2] = 0;
-    //       } else {
-    //         var c = (3 * Math.log(i)) / Math.log(iterations - 1.0);
-    //         if (c < 1) {
-    //           pix[ppos] = 225 * c;
-    //           pix[ppos + 1] = 0;
-    //           pix[ppos + 2] = 0;
-    //         } else if (c < 2) {
-    //           pix[ppos] = 255;
-    //           pix[ppos + 1] = 255 * (c - 1);
-    //           pix[ppos + 2] = 0;
-    //         } else {
-    //           pix[ppos] = 255;
-    //           pix[ppos + 1] = 255;
-    //           pix[ppos + 2] = 255 * (c - 2);
-    //         }
-    //       }
-    //       pix[ppos + 3] = 255;
-    //     }
-    //   }
-    //   ctx.putImageData(img, 0, 0);
-    // }
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d')
-    canvas.width = 900;
-    canvas.height = 900;
-    canvas.fillStyle = 'rgb(200, 0, 0)';
-
-
-    // mandelbrot(canvas, -2, 1, -1, 1, 1000);
-
-
+      for(var i = 0; i < 10; i++) {
+        // calc real and imaginary components of result seperatley
+        var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx
+        var tempImagComp = 2 * realCompResult * imaginaryCompResult + yAx;
+        realCompResult = tempRealComp;
+        imaginaryCompResult = tempImagComp;
+      }
+      if(realCompResult * imaginaryCompResult < 5) {
+        return true; // in set
+      }
+      return false; // not in set
+    }
+    var scaleFactor = 600;
+    var panX = 0;
+    var panY = 0;
+    for(var x = 0; x < canvas.width; x++) {
+      for(var y = 0; y < canvas.height; y++){
+        var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
+        if (belongsTo) { ctx.fillRect(x,y,1,1); } // black pixel
+      }
+    }
   }
 };
 </script>
