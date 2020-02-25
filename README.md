@@ -48,6 +48,7 @@
   .... research ..... code examples ... how it could be done ...
 
   1. Set Up the Canvas
+  
     ```javascript
     var canvas = document.getElementById("canvas");
     if(canvas.getContext) {
