@@ -68,7 +68,7 @@ export default {
     function inMandelbrotSet(xAx, yAx) {
       var realCompResult = xAx;
       var imaginaryCompResult = yAx;
-      var maxIter = 100;
+      var maxIter = 300;
       for(var i = 0; i < maxIter; i++) {
         // calc real and imaginary components of result seperatley
         var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx;
@@ -82,15 +82,15 @@ export default {
       }
         return 0; // not in set
     }
-    var scaleFactor = 200;
-    var panX = 2;
-    var panY = 1.5;
+    var scaleFactor = 3000;
+    var panX = 0.7;
+    var panY = 0.6;
     for(var x = 0; x < canvas.width; x++) {
       for(var y = 0; y < canvas.height; y++){
         var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
         // if (belongsTo) { ctx.fillRect(x,y,1,1); } // black pixel
         if (belongsTo == 0) {
-          ctx.fillStyle == '#100';
+          ctx.fillStyle = '#000';
           ctx.fillRect(x,y,1,1); // black pixel
         } else {
           ctx.fillStyle = 'hsl(0, 100%, ' + belongsTo + '%)';
