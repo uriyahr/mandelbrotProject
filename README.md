@@ -23,9 +23,6 @@
     console.log('hello')
   in server run npm start...
 
-# Start Mandelbrot
-  Mandelbrot Fractal Zoom
-
 # ESLint is the Enemey
   ...Eventually Removed ESLINT from code
   In client/build/webpack.base.conf.js
@@ -47,6 +44,18 @@
         // ...(config.dev.useEslint ? [createLintingRule()] : []),
 
 
+# Mandelbrot Set
+  .... research ..... code examples ... how it could be done ...
+
+  1. Set Up the Canvas
+    ```javascript
+    var canvas = document.getElementById("canvas");
+    if(canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+    }
+    canvas.width = 600;
+    canvas.height = 600;
+    ```
 
 
 
