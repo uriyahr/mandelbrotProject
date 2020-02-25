@@ -15,7 +15,7 @@
     <button>Incremenet Zoom</button>
     <button>Decrement Zoom</button>
     <button>Reset Mandelbrot</button>
-    <p>Zoom Scale Factor</p>
+    <canvas id="canvas"></canvas>
   </div>
 </template>
 
@@ -55,35 +55,47 @@ export default {
     };
   },
   mounted() {
-    var canvas = document.createElement("canvas")
+    var canvas = document.getElementById("canvas");
+    if(canvas.getContext) {
+      var ctx = canvas.getContext('2d');
+    }
     canvas.width = 600;
     canvas.height = 600;
-    document.body.appendChild(canvas);
-    var ctx = canvas.getContext('2d');
+    // document.body.appendChild(canvas);
+
+    // var ctx = canvas.getContext('2d');
 
     function inMandelbrotSet(xAx, yAx) {
       var realCompResult = xAx;
       var imaginaryCompResult = yAx;
-
-      for(var i = 0; i < 10; i++) {
+      var maxIter = 100;
+      for(var i = 0; i < maxIter; i++) {
         // calc real and imaginary components of result seperatley
-        var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx
+        var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx;
         var tempImagComp = 2 * realCompResult * imaginaryCompResult + yAx;
         realCompResult = tempRealComp;
         imaginaryCompResult = tempImagComp;
+
+        if(realCompResult * imaginaryCompResult > 5) {
+          return (i/maxIter * 100); // in set
+        }
       }
-      if(realCompResult * imaginaryCompResult < 5) {
-        return true; // in set
-      }
-      return false; // not in set
+        return 0; // not in set
     }
-    var scaleFactor = 600;
-    var panX = 0;
-    var panY = 0;
+    var scaleFactor = 200;
+    var panX = 2;
+    var panY = 1.5;
     for(var x = 0; x < canvas.width; x++) {
       for(var y = 0; y < canvas.height; y++){
         var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
-        if (belongsTo) { ctx.fillRect(x,y,1,1); } // black pixel
+        // if (belongsTo) { ctx.fillRect(x,y,1,1); } // black pixel
+        if (belongsTo == 0) {
+          ctx.fillStyle == '#100';
+          ctx.fillRect(x,y,1,1); // black pixel
+        } else {
+          ctx.fillStyle = 'hsl(0, 100%, ' + belongsTo + '%)';
+          ctx.fillRect(x,y,1,1);
+        }
       }
     }
   }
@@ -95,8 +107,8 @@ export default {
 body {
   background-color: #1e1e1e;
 }
-canvas {
-  border: 1px solid white;
+#canvas {
+  border: 1px solid #1e1e1e;
 }
 .vue-typer {
   font-family: "EB Garamond", serif;
@@ -118,4 +130,5 @@ li {
   padding-left: 300px;
   padding-right: 300px;
 }
+
 </style>
