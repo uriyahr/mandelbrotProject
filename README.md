@@ -49,7 +49,7 @@
 
   1. Set Up the Canvas
   
-    ```javascript
+    ```
     var canvas = document.getElementById("canvas");
     if(canvas.getContext) {
       var ctx = canvas.getContext('2d');
