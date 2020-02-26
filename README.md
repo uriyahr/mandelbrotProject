@@ -45,17 +45,20 @@
 
 
 # Mandelbrot Set
-  .... research ..... code examples ... how it could be done ...
+  ... research ..... code examples ... how it could be done ...
 
   1. Set Up the Canvas
+
     ```javascript
-    var canvas = document.getElementById("canvas");
+    var canvas = document.getElementById('canvas');
     if(canvas.getContext) {
       var ctx = canvas.getContext('2d');
     }
     canvas.width = 600;
     canvas.height = 600;
     ```
+
+  2.
 
 
 
