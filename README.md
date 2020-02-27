@@ -42,7 +42,7 @@
 ## ESLint is the Enemey
   After workign with ESLint for a while I decided to remove it from my project because of it being a bit of a hassle. For those intersted in removing it...
 
-  Head into build/webpack.base.conf.js and remove
+  Head into build/webpack.base.conf.js and remove/comment
   ```javascript
   const createLintingRule = () => ({
     test: /\.(js|vue)$/,
@@ -74,7 +74,28 @@
     canvas.height = 600;
     ```
 
-  2.
+  ## Default Fractal Setting
+    maxIterations: 200
+    Scale Factor: 200
+    panX: 2
+    panY: 1.5
+    X-Axis:
+    increasing panX shifts the mandelbrot to the right
+    decreasing panX shifts the mandelbrot to the left
+
+    mandelbrotVisibleXAxis(panX >= -0.4 and panX <= 5.3)
+    xAxis from -0.4 to 5.3
+
+    Y-Axis:
+    increasing panY shifts the mandelbrot down
+    decreasing panY shifts the mandelbrot up
+
+    mandelbrotVisbibleYAxis(panY <= 3.7 and panY > -0.7)
+    yAxis from -0.7 to 3.7
+
+    if(the scaleFactor(zoom) is increased) {
+      increase maxIterations by approx 10%
+    }
 
 
 

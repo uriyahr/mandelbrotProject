@@ -12,10 +12,12 @@
         </li>
       </ul>
     </div>
+    <canvas class="mbCanvas" id="canvas"></canvas>
+    <div class="controls">
     <button>Incremenet Zoom</button>
     <button>Decrement Zoom</button>
     <button>Reset Mandelbrot</button>
-    <canvas id="canvas"></canvas>
+    </div>
   </div>
 </template>
 
@@ -31,6 +33,9 @@ export default {
   },
   data: function() {
     return {
+      scaleFactor: 100,
+      panX: 0,
+      panY: 0,
       introMsg: [
         {
           text: "THE MANDELBROT SET",
@@ -59,7 +64,7 @@ export default {
     if(canvas.getContext) {
       var ctx = canvas.getContext('2d');
     }
-    canvas.width = 600;
+    canvas.width = 800;
     canvas.height = 600;
     // document.body.appendChild(canvas);
 
@@ -68,7 +73,7 @@ export default {
     function inMandelbrotSet(xAx, yAx) {
       var realCompResult = xAx;
       var imaginaryCompResult = yAx;
-      var maxIter = 300;
+      var maxIter = 200;
       for(var i = 0; i < maxIter; i++) {
         // calc real and imaginary components of result seperatley
         var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx;
@@ -80,11 +85,11 @@ export default {
           return (i/maxIter * 100); // in set
         }
       }
-        return 0; // not in set
+        return 0;
     }
-    var scaleFactor = 3000;
-    var panX = 0.7;
-    var panY = 0.6;
+    var scaleFactor = 3000; // to data
+    var panX = 0.7; // to data
+    var panY = 0.6; // to data
     for(var x = 0; x < canvas.width; x++) {
       for(var y = 0; y < canvas.height; y++){
         var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
@@ -93,7 +98,8 @@ export default {
           ctx.fillStyle = '#000';
           ctx.fillRect(x,y,1,1); // black pixel
         } else {
-          ctx.fillStyle = 'hsl(0, 100%, ' + belongsTo + '%)';
+          // console.log(belongsTo);
+          ctx.fillStyle = 'hsla(255, 100%, ' + belongsTo + '%, 0.7)';
           ctx.fillRect(x,y,1,1);
         }
       }
@@ -107,8 +113,9 @@ export default {
 body {
   background-color: #1e1e1e;
 }
-#canvas {
+.mbCanvas {
   border: 1px solid #1e1e1e;
+  text-align: center;
 }
 .vue-typer {
   font-family: "EB Garamond", serif;
@@ -129,6 +136,9 @@ li {
 .introMsg {
   padding-left: 300px;
   padding-right: 300px;
+}
+.controls {
+  text-align: center;
 }
 
 </style>
