@@ -60,7 +60,7 @@
 
 
 # Mandelbrot Set
-  ... research ..... code examples ... how it could be done ...
+  ... research ..... code examples ... how it could be done,
 
   1. Set Up the Canvas
      This is where we will plot our Mandelbrot Set
@@ -77,8 +77,10 @@
   ## Default Fractal Setting
     maxIterations: 200
     Scale Factor: 200
+    default increase/decrease change ___
     panX: 2
     panY: 1.5
+
     X-Axis:
     increasing panX shifts the mandelbrot to the right
     decreasing panX shifts the mandelbrot to the left
@@ -94,8 +96,21 @@
     yAxis from -0.7 to 3.7
 
     if(the scaleFactor(zoom) is increased) {
-      increase maxIterations by approx 10%
+      increase maxIterations by approx  __
     }
+    onClick increaseZoom scaleFactor = scaleFactor+50?
+    oncClick decreaseZoom scaleFactor = scaleFactor-50;
+    mouseOverCanvas(){
+      return x,y
+    }
+    ALTER(based on x,y change)
+    panX,panY = mouseOverCanvas()
+    Update drawMandelbrot
+
+
+
+
+
 
 
 
