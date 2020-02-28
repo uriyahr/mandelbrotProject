@@ -65,15 +65,25 @@ export default {
       var ctx = canvas.getContext('2d');
     }
     canvas.width = 800;
-    canvas.height = 600;
+    canvas.height = 800;
     // document.body.appendChild(canvas);
-
     // var ctx = canvas.getContext('2d');
+    var scaleFactor = 250; // to data
+    var panX = 2; // to data
+    var panY = 1.6; // to data
+
+    function getCoord(canvas, event){
+      console.log("X Coord: ", event.clientX);
+      console.log("Y Coord: ", event.clientY);
+    }
+    canvas.addEventListener("mousedown", function(e) {
+        getCoord(canvas,e);
+    });
 
     function inMandelbrotSet(xAx, yAx) {
       var realCompResult = xAx;
       var imaginaryCompResult = yAx;
-      var maxIter = 200;
+      var maxIter = 400;
       for(var i = 0; i < maxIter; i++) {
         // calc real and imaginary components of result seperatley
         var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx;
@@ -87,9 +97,7 @@ export default {
       }
         return 0;
     }
-    var scaleFactor = 250; // to data
-    var panX = 2; // to data
-    var panY = 1.5; // to data
+
     for(var x = 0; x < canvas.width; x++) {
       for(var y = 0; y < canvas.height; y++){
         var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
