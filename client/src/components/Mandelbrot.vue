@@ -33,9 +33,9 @@ export default {
   },
   data: function() {
     return {
-      scaleFactor: 100,
-      panX: 0,
-      panY: 0,
+      scaleFactor: 200,
+      panX: 2,
+      panY: 1.5,
       introMsg: [
         {
           text: "THE MANDELBROT SET",
@@ -87,9 +87,9 @@ export default {
       }
         return 0;
     }
-    var scaleFactor = 3000; // to data
-    var panX = 0.7; // to data
-    var panY = 0.6; // to data
+    var scaleFactor = 250; // to data
+    var panX = 2; // to data
+    var panY = 1.5; // to data
     for(var x = 0; x < canvas.width; x++) {
       for(var y = 0; y < canvas.height; y++){
         var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));

@@ -107,6 +107,9 @@
     panX,panY = mouseOverCanvas()
     Update drawMandelbrot
 
+    1. Zoom In (test iteration)
+    default zoom : iteration ()
+
 
 
 
