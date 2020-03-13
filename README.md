@@ -74,6 +74,8 @@
     canvas.height = 600;
     ```
 
+  ## Color Change Bar
+
   ## Default Fractal Setting
     maxIterations: 400
     Scale Factor: 250

@@ -17,15 +17,16 @@
     <input
       type="range"
       name="range"
-      value="0"
-      min="0"
+      value="1"
+      min="1"
       max="255"
       step="1"
-      class="color-slider"/>
+      class="color-slider"
+      v-model="colorValue" />
     <div class="controls">
-    <button>Incremenet Zoom</button>
-    <button>Decrement Zoom</button>
-    <button>Reset Mandelbrot</button>
+      <button>Incremenet Zoom</button>
+      <button>Decrement Zoom</button>
+      <button>Reset Mandelbrot</button>
     </div>
   </div>
 </template>
@@ -42,6 +43,7 @@ export default {
   },
   data: function() {
     return {
+      colorValue: 0,
       scaleFactor: 200,
       panX: 2,
       panY: 1.5,
@@ -66,26 +68,82 @@ export default {
         //   repeat: 0
         // }
       ]
-    };
+    }
+  },
+  computed: {
+    currentColorValue: function () {
+      return this.colorValue;
+    }
   },
   mounted() {
     const track = document.querySelector(".color-slider");
     const color_value_el = document.querySelector(".color-value");
-    const changeBgTo = color => (track.style.background = color);
-
+    var changeBgTo = color => (track.style.background = color);
     var canvas = document.getElementById("canvas");
+    var value;
+
     if(canvas.getContext) {
       var ctx = canvas.getContext('2d');
     }
+
     canvas.width = 800;
     canvas.height = 800;
-    // document.body.appendChild(canvas);
-    // var ctx = canvas.getContext('2d');
     var scaleFactor = 250; // to data
-    var panX = 2; // to data org: 2
-    var panY = 1.5; // to data org: 2
+    var panX = 2;
+    var panY = 1.5;
+
+   track.addEventListener("input", () => {
+      var colorCode = '#fff';
+      value = parseInt(track.value);
+
+      changeBgTo(value);
+      color_value_el.innerText = value;
+      color_value_el.style.opacity = 1;
+      track.style.boxShadow = '0 5px 15px rbga(255, 255, 255, 0.15)';
 
 
+    })
+
+    function inMandelbrotSet(xAx, yAx) {
+      var realCompResult = xAx;
+      var imaginaryCompResult = yAx;
+      var maxIter = 400;
+      for(var i = 0; i < maxIter; i++) {
+        // calculating real and imaginary components of result seperatley
+        var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx;
+        var tempImagComp = 2 * realCompResult * imaginaryCompResult + yAx;
+        realCompResult = tempRealComp;
+        imaginaryCompResult = tempImagComp;
+
+        if(realCompResult * imaginaryCompResult > 5) {
+          return (i/maxIter * 100); // in set
+        }
+      }
+        return 0;
+    }
+    console.log(this.currentColorValue);
+     for(var x = 0; x < canvas.width; x++) {
+      for(var y = 0; y < canvas.height; y++){
+        var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
+        if (belongsTo == 0) {
+          ctx.fillStyle = '#000';
+          ctx.fillRect(x,y,1,1); // black pixel
+        } else {
+          ctx.fillStyle = 'hsla('+ this.currentColorValue + ', 100%, ' + belongsTo + '%, 0.8)';
+          ctx.fillRect(x,y,1,1);
+        }
+      }
+    }
+
+
+    track.addEventListener('change', ()=> {
+      setTimeout(() => {
+        color_value_el.style.opacity = 0;
+        track.style.boxShadow = '0 5px 15px rbga(255, 255, 255, 0)';
+      },1000);
+    })
+
+   // track coordinates on mandelbrot canvas
     function getCoord(canvas, event){
       console.log("X Coord:", event.clientX);
       if(event.clientX < 0) {
@@ -103,68 +161,6 @@ export default {
     canvas.addEventListener("mousedown", function(e) {
         getCoord(canvas,e);
     });
-
-    function inMandelbrotSet(xAx, yAx) {
-      var realCompResult = xAx;
-      var imaginaryCompResult = yAx;
-      var maxIter = 400;
-      for(var i = 0; i < maxIter; i++) {
-        // calc real and imaginary components of result seperatley
-        var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAx;
-        var tempImagComp = 2 * realCompResult * imaginaryCompResult + yAx;
-        realCompResult = tempRealComp;
-        imaginaryCompResult = tempImagComp;
-
-        if(realCompResult * imaginaryCompResult > 5) {
-          return (i/maxIter * 100); // in set
-        }
-      }
-        return 0;
-    }
-
-    for(var x = 0; x < canvas.width; x++) {
-      for(var y = 0; y < canvas.height; y++){
-        var belongsTo = inMandelbrotSet((x/scaleFactor - panX), (y/scaleFactor - panY));
-        // if (belongsTo) { ctx.fillRect(x,y,1,1); } // black pixel
-        if (belongsTo == 0) {
-          ctx.fillStyle = '#000';
-          ctx.fillRect(x,y,1,1); // black pixel
-        } else {
-          // console.log(belongsTo);
-          //ctx.fillStyle = 'hsla(25, 100%, ' + belongsTo + '%, 0.8)';
-          ctx.fillStyle = changeBgTo()
-          ctx.fillRect(x,y,1,1);
-        }
-      }
-    }
-    track.addEventListener("input", () => {
-      const value = track.value;
-      var colorCode = '#fff';
-      console.log("value:", value);
-      if(value < 51) {
-        colorCode = '#627264';
-      }else if(value >= 51 && value < 102) {
-        colorCode = '#A1CDA8';
-      } else if(value >= 102 && value < 153) {
-        colorCode = '#B5DFCA';
-      }else if(value >= 153 && value < 204){
-        colorCode = '#C5E7E2';
-      }else if(value >= 204 && value < 255) {
-        colorCode = '#AD9BAA';
-      }
-
-      color_value_el.innerText = value;
-      color_value_el.style.opacity = 1;
-      track.style.boxShadow = '0 5px 15px rbga(255, 255, 255, 0.15)';
-      return changeBgTo(colorCode);
-    })
-
-    track.addEventListener('change', ()=> {
-      setTimeout(() => {
-        color_value_el.style.opacity = 0;
-        track.style.boxShadow = '0 5px 15px rbga(255, 255, 255, 0)';
-      },1000);
-    })
   }
 };
 </script>
@@ -203,7 +199,7 @@ li {
 }
 .color-value {
   font-size: 6em;
-  margin-bottom:70px;
+  margin-bottom: 70px;
   color: #fff;
   text-shadow: 0 5px 20px rbga(255, 255, 255, 0.1);
   opacity: 0;
@@ -232,6 +228,4 @@ li {
   background: #000000;
   cursor: pointer;
 }
-
-
 </style>
