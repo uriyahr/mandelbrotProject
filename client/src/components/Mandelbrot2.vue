@@ -7,27 +7,27 @@
       :height="canvasHeight"
       ></canvas>
     <input
-      type="range"
-      name="range"
       min="0"
       max="255"
       step="1"
-      v-model="colorValue"
-      v-on:change="draw()"
-    />
-    <span v-text="colorValue"></span>
+      v-model="updateColorValue"
+      v-on:keyup.enter="draw()"
+      />
+    <ColorPalette/>
   </div>
 </template>
 <script>
+import ColorPalette from './ColorPalette'
 export default {
   name: "Mandelbrot2",
-  props: {
-    msg: String,
-  },
+  components: {
+    ColorPalette
+},
   data: function () {
     return {
-      colorValue: 0,
-      maxIteration: 200,
+      updateColorValue: ColorPalette.data().currentColor,
+      colorValue:180,
+      maxIteration: 400,
       canvasWidth: 800,
       canvasHeight: 800,
       scaleFactor: 250,
@@ -36,8 +36,12 @@ export default {
     }
   },
   computed: {
-    calculatedColorValue: function () {
-      return this.colorValue;
+    // updateColorValue: function() {
+    //   this.colorValue = this.ColorPalette.data().currentColor;
+    // },
+    calculatedColorValue: function() {
+      console.log("from mandelbrotComponent new Color Val",this.updateColorValue);
+      return this.updateColorValue;
     }
   },
   methods: {
@@ -63,11 +67,10 @@ export default {
         for(var y=0; y < this.canvasHeight; y++) {
           var belongsTo = this.inMandelbrotSet((x/this.scaleFactor-this.panX), (y/this.scaleFactor - this.panY));
           if(belongsTo == 0){
-            // black pixel
             ctx.fillStyle = '#000';
             ctx.fillRect(x,y,1,1);
           }else {
-            ctx.fillStyle = 'hsla('+ this.calculatedColorValue+ ', 100%, ' + belongsTo + '%, 0.8)';
+            ctx.fillStyle = 'hsla('+ this.calculatedColorValue + ', 100%, ' + belongsTo + '%, 0.8)';
             ctx.fillRect(x,y,1,1);
           }
         }

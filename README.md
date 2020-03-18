@@ -106,6 +106,8 @@
     1. Zoom In (test iteration)
     default zoom : iteration ()
 
+  ## Refactor with Input Range for Color ---> Color Palette
+  Creating a Color Palette as Component
 
 
 

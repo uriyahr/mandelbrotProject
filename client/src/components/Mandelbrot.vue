@@ -53,22 +53,8 @@ export default {
           preTypeDelay: 0, // 17990
           typeDelay: 100,   // 130
           repeat: 0
-        },
-        // {
-        //   text:
-        //     "Based on my accumulated knowledge on the infamous set of complex numbers that are not known for diverging… ",
-        //   preTypeDelay: 0,
-        //   typeDelay: 80,
-        //   repeat: 0
-        // },
-        // {
-        //   text: "I present to you",
-        //   preTypeDelay: 12990,
-        //   typeDelay: 110,
-        //   repeat: 0
-        // }
-      ]
-    }
+        }
+    },
   },
   computed: {
     currentColorValue: function () {
