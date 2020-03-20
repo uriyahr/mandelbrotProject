@@ -1,8 +1,6 @@
 <template>
   <div>
-    <headerComponent/>
     <router-view/>
-    <footerComponent/>
   </div>
 </template>
 

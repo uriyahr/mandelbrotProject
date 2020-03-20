@@ -107,7 +107,11 @@
     default zoom : iteration ()
 
   ## Refactor with Input Range for Color ---> Color Palette
-  Creating a Color Palette as Component
+  - create a Color Palette as Component
+  - create watch function to run draw when colorValue is changed
+  - emit color palette component to mandelbrot2 component
+  - add zoom functions
+
 
 
 

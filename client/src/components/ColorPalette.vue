@@ -1,18 +1,23 @@
 <template>
   <div class="colorPalette">
       <button v-for="info in palette"
-      v-bind:key="info.id"
-      v-bind:style="{'background-color': info.hex}"
-      @click="currentColor = setNewColor(info.hex)">
-        {{ info.color }}, {{ hextoHueValue(info.hex) }}
+      :key="info.id"
+      :style="{'background-color': info.hex}"
+      @click="setNewColor(info.hex)">
+      {{ info.color }}, {{ hextoHueValue(info.hex) }}
       </button>
   </div>
 </template>
 <script>
+import Mandelbrot2 from './Mandelbrot2'
 export default {
   name:'ColorPalette',
+  components: {
+    Mandelbrot2
+  },
   data() {
     return {
+      newColorVal: 0,
       currentColor: 65,
       palette: [
         {
@@ -40,13 +45,14 @@ export default {
   },
   methods: {
     setNewColor(newHex) {
-      console.log("setNewColor",this.hextoHueValue(newHex));
-      return this.currentColor = this.hextoHueValue(newHex);
+      this.newColorVal = this.hextoHueValue(newHex);
+      console.log('(from colorPal Comp)color btn clicked',this.newColorVal);
+      this.$emit('update-color', this.newColorVal);
     },
     hextoHueValue(hex) {
       /**
        * Covert hex to RBG, RBG to base 10's to HSL
-       * Return H (hue)
+       * Return h (hue)
        */
       let r = 0, g = 0, b = 0, a = 1;
       if(hex.length == 7) {
@@ -74,7 +80,6 @@ export default {
       }
       h = Math.round(h * 60);
       if(h < 0) h+= 360;
-      console.log(h);
       return h;
     }
   }

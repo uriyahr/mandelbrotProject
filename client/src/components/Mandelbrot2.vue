@@ -10,42 +10,49 @@
       min="0"
       max="255"
       step="1"
-      v-model="updateColorValue"
-      v-on:keyup.enter="draw()"
+      v-model="colorValue"
+      @keyup.enter="draw()"
       />
-    <ColorPalette/>
+    <ColorPalette @update-color="updateColor"/>
   </div>
 </template>
 <script>
 import ColorPalette from './ColorPalette'
 export default {
   name: "Mandelbrot2",
+  props:['newColorVal'],
   components: {
     ColorPalette
 },
   data: function () {
     return {
-      updateColorValue: ColorPalette.data().currentColor,
+      //updateColorValue: ColorPalette.data().currentColor,
       colorValue:180,
-      maxIteration: 400,
-      canvasWidth: 800,
-      canvasHeight: 800,
-      scaleFactor: 250,
-      panX: 2,
-      panY: 1.5
+      maxIteration: 350,
+      canvasWidth: 600,
+      canvasHeight: 600,
+      scaleFactor: 200,
+      panX: 2, //2
+      panY: 1.5 //1.5
     }
   },
   computed: {
     // updateColorValue: function() {
     //   this.colorValue = this.ColorPalette.data().currentColor;
     // },
-    calculatedColorValue: function() {
-      console.log("from mandelbrotComponent new Color Val",this.updateColorValue);
-      return this.updateColorValue;
+    // calculatedColorValue: function() {
+    //   console.log("(from mandel comp) new Color Val",this.updateColorValue);
+    //   return this.updateColorValue;
+    // }
+  },
+  watch: {
+    colorValue: function() {
+      console.log('(from mandel comp) colorValue changed, calling draw()...');
+      this.draw();
     }
   },
   methods: {
-    inMandelbrotSet(xAxis, yAxis) {
+    inMandelbrotSet (xAxis, yAxis) {
       var realCompResult = xAxis;
       var imaginaryCompResult = yAxis;
       for(var i = 0; i < this.maxIteration; i++){
@@ -60,7 +67,7 @@ export default {
       }
       return 0;
     },
-    draw() {
+    draw () {
       var canvas = document.getElementById("canvas");
       if(canvas.getContext) {var ctx = canvas.getContext('2d');}
       for(var x = 0; x < this.canvasWidth; x++){
@@ -70,12 +77,34 @@ export default {
             ctx.fillStyle = '#000';
             ctx.fillRect(x,y,1,1);
           }else {
-            ctx.fillStyle = 'hsla('+ this.calculatedColorValue + ', 100%, ' + belongsTo + '%, 0.8)';
+            ctx.fillStyle = 'hsla('+ this.colorValue + ', 100%, ' + belongsTo + '%, 0.8)';
             ctx.fillRect(x,y,1,1);
           }
         }
       }
+    },
+    updateColor(newColor) {
+      console.log('(From Mandel Comp) updating color... to ', newColor);
+      this.colorValue = newColor;
     }
+    // zoomIn(event) {
+    //   // get mouse up location
+    //   // var x = event.clientX;
+    //   // var y = event.clientY;
+    //   // pixel location
+
+    //   // transform pizel coordinates to ccartesian coordinates
+
+
+    //   // mouse release is new center
+
+    // },
+    // zoomOut () {
+
+    // },
+    // resetMandelbrot () {
+
+    // }
   }
 }
 </script>
