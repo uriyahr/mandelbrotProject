@@ -1,18 +1,12 @@
 <template>
   <div>
+    <h2> {{ title }}</h2>
     <canvas
       class="mbCanvas"
       id="canvas"
       :width="canvasWidth"
       :height="canvasHeight"
       ></canvas>
-    <input
-      min="0"
-      max="255"
-      step="1"
-      v-model="colorValue"
-      @keyup.enter="draw()"
-      />
     <ColorPalette @update-color="updateColor"/>
   </div>
 </template>
@@ -23,10 +17,11 @@ export default {
   props:['newColorVal'],
   components: {
     ColorPalette
-},
+  },
   data: function () {
     return {
       //updateColorValue: ColorPalette.data().currentColor,
+      title: 'Mandelbrot Fractal Set',
       colorValue:180,
       maxIteration: 350,
       canvasWidth: 600,
@@ -109,7 +104,19 @@ export default {
 }
 </script>
 <style>
+@import url('https://fonts.googleapis.com/css?family=Raleway:200&display=swap');
 body {
-  background-color: #1e1e1e;
+  background-color: #0f111a;
 }
+h2 {
+  color: white;
+  text-align: center;
+  font-family: 'Raleway', sans-serif;
+}
+button {
+  font-family: 'Raleway', sans-serif;
+  padding: 15px 32px;
+  margin: 4px 2px;
+}
+
 </style>
