@@ -5,6 +5,7 @@
   </div>
 </template>
 <script>
+var mandelbrot = require('../scripts/mandelbrot.js')
 export default {
   name: 'p5Mandelbrot',
   data: function () {
@@ -13,14 +14,12 @@ export default {
     }
   },
   mounted() {
-    const script = function(p5) {
-      p5.setup = _ => {
-        p5.createCanvas(500,500);
-      }
-      p5.draw = _ => {
-        p5.background(0);
-      }
-    }
+    const P5 = require('p5');
+    new P5(mandelbrot.main);
+    mandelbrot.setDelegate();
+    // use p5 as an instance mode
+    // const P5 = require('p5');
+    // new P5(script);
   }
 }
 </script>

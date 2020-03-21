@@ -107,14 +107,17 @@
     default zoom : iteration ()
 
   ## Refactor with Input Range for Color ---> Color Palette
-  - create a Color Palette as Component
-  - create watch function to run draw when colorValue is changed
-  - emit color palette component to mandelbrot2 component
-  - add zoom functions
+  - create a Color Palette as Component(done)
+  - create watch function to run draw when colorValue is changed(done)
+  - emit color palette component to mandelbrot2 component(done)
+  - convert to p5
+  - add zoom
 
 
 
 
+# Mandelbrot in p5 (Reconfig):
+npm install --save p5
 
 
 
