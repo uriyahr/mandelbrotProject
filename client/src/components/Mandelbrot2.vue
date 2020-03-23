@@ -23,9 +23,9 @@ export default {
       //updateColorValue: ColorPalette.data().currentColor,
       title: 'Mandelbrot Fractal Set',
       colorValue:180,
-      maxIteration: 350,
-      canvasWidth: 600,
-      canvasHeight: 600,
+      maxIteration: 100,
+      canvasWidth: 500,
+      canvasHeight: 500,
       scaleFactor: 200,
       panX: 2, //2
       panY: 1.5 //1.5
@@ -42,20 +42,20 @@ export default {
   },
   watch: {
     colorValue: function() {
-      console.log('(from mandel comp) colorValue changed, calling draw()...');
       this.draw();
     }
   },
   methods: {
     inMandelbrotSet (xAxis, yAxis) {
-      var realCompResult = xAxis;
-      var imaginaryCompResult = yAxis;
+      let realCompResult = xAxis;
+      let imaginaryCompResult = yAxis;
       for(var i = 0; i < this.maxIteration; i++){
-        var tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAxis;
-        var tempImagComp = 2 * realCompResult * imaginaryCompResult + yAxis;
+        let tempRealComp = realCompResult * realCompResult - imaginaryCompResult * imaginaryCompResult + xAxis;
+        let tempImagComp = 2 * realCompResult * imaginaryCompResult + yAxis;
+        console.log('real comp: ', realCompResult, tempRealComp);
+        console.log('imag comp: ', imaginaryCompResult, tempImagComp);
         realCompResult = tempRealComp;
         imaginaryCompResult = tempImagComp;
-
         if(realCompResult * imaginaryCompResult > 5) {
           return (i/this.maxIteration * 100); // is in the set
         }
@@ -63,11 +63,11 @@ export default {
       return 0;
     },
     draw () {
-      var canvas = document.getElementById("canvas");
+      let canvas = document.getElementById("canvas");
       if(canvas.getContext) {var ctx = canvas.getContext('2d');}
-      for(var x = 0; x < this.canvasWidth; x++){
-        for(var y=0; y < this.canvasHeight; y++) {
-          var belongsTo = this.inMandelbrotSet((x/this.scaleFactor-this.panX), (y/this.scaleFactor - this.panY));
+      for(let x = 0; x < this.canvasWidth; x++){
+        for(let y=0; y < this.canvasHeight; y++) {
+          let belongsTo = this.inMandelbrotSet((x/this.scaleFactor-this.panX), (y/this.scaleFactor - this.panY));
           if(belongsTo == 0){
             ctx.fillStyle = '#000';
             ctx.fillRect(x,y,1,1);
@@ -79,7 +79,6 @@ export default {
       }
     },
     updateColor(newColor) {
-      console.log('(From Mandel Comp) updating color... to ', newColor);
       this.colorValue = newColor;
     }
     // zoomIn(event) {

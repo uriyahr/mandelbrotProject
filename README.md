@@ -6,18 +6,18 @@
   vue init webpack client
   vue-cli setup
   ```
-  ```
+  ```terminal
   npm install
   npm run dev
   ```
 ## Server
-  ```
+  ```terminal
   mkdir server
   npm install -f
   npm install --save nodemon eslint
   ```
   If an error occurs with ESLint when running npm start, a few lines in package.json may need to be changed to
-  ```
+  ```javascript
   "start": "./node_modules/nodemon/bin nodemon.js src/app.js --exec 'npm run lint && node'",
   "lint": "eslint \"**/*.js\"",
   ```
