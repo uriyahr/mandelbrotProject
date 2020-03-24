@@ -17,9 +17,6 @@ export default {
     const P5 = require('p5');
     new P5(mandelbrot.main);
     mandelbrot.setDelegate();
-    // use p5 as an instance mode
-    // const P5 = require('p5');
-    // new P5(script);
   }
 }
 </script>

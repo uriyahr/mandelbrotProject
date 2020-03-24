@@ -10,8 +10,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'p5Mandelbrot',
-      component: p5Mandelbrot
+      name: 'Mandelbrot2',
+      component: Mandelbrot2
     },
     {
       path: '/HelloWorld',
