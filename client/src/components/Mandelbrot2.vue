@@ -1,12 +1,13 @@
 <template>
-  <div>
+  <div id="div">
     <h2>{{ title }}</h2>
-    <canvas class="mbCanvas" id="canvas" :width="canvasWidth" :height="canvasHeight"></canvas>
+    <!-- <canvas class="mbCanvas" id="canvas" :width="canvasWidth" :height="canvasHeight"></canvas> -->
     <ColorPalette @update-color="updateColor" />
   </div>
 </template>
 <script>
 import ColorPalette from "./ColorPalette";
+import * as d3 from 'd3';
 export default {
   name: "Mandelbrot2",
   props: ["newColorVal"],
@@ -23,7 +24,8 @@ export default {
       canvasHeight: 300,
       scaleFactor: 200,
       panX: 2, //2
-      panY: 1.5 //1.5
+      panY: 1.5, //1.5
+      chartSize: 300
     };
   },
   computed: {
@@ -59,26 +61,40 @@ export default {
       return 0;
     },
     draw() {
-      var canvas = document.getElementById("canvas");
+      var dataSize = 300;
+      var dataSet = d3.range(dataSize).map(
+        function(d,i){
+          return d3.range(dataSize).map(
+            function(d,i){
+              return ~~(Math.random()*255);
+            })
+      });
+      //var canvas = document.getElementById("canvas");
+      var canvas = d3.select('#div').append('canvas').node();
       if (canvas.getContext) { var ctx = canvas.getContext("2d");}
-      console.log(ctx);
-      var imageData = ctx.getImageData(0,0, this.canvasWidth, this.canvasHeight);
-      console.log(imageData);
-      for (var x = 0; x < this.canvasWidth; x++) {
-        for (var y = 0; y < this.canvasHeight; y++) {
-          var index = parseInt(((x + y * this.canvasWidth) * 4),10);
+      var imageData = ctx.getImageData(0,0,canvas.width , canvas.height);
+      var buffer = new ArrayBuffer(imageData.data.length);
+      var buffer8 = new Uint8ClampedArray(buffer);
+      var data = new Uint32Array(buffer);
+
+      // possibly switch y and x in nested for loops
+      for (var y = 0; y < canvas.height; ++y) {
+        for (var x = 0; x < canvas.width; ++x) {
+         // var index = parseInt(((x + y * this.canvasWidth)),10);
+          var index = y * canvas.width + x;
           var belongsTo = this.inMandelbrotSet(
             (x / this.scaleFactor - this.panX),
             (y / this.scaleFactor - this.panY)
           );
           if (belongsTo == 0) {
-            //ctx.fillStyle = '#000';
-            imageData.data[index] = 0;
+            ctx.fillStyle = '#000';
+            data[index] = 0;
             // ctx.putImageData(imageData, x, y);
             //ctx.fillRect(x,y,1,1);
           } else {
             // ctx by pixel
-            imageData.data[index] = 50;
+            ctx.fillStyle = '#34eb61'
+            data[index] = 50;
             // ctx.putImageData(imageData, x, y);
             //imageData.data[index] = 'hsla('+ this.colorValue + ', 100%, ' + belongsTo + '%, 0.8)';
             //ctx.fillStyle = 'hsla('+ this.colorValue + ', 100%, ' + belongsTo + '%, 0.8)';
@@ -86,8 +102,13 @@ export default {
           }
         }
       }
-      ctx.putImageData(imageData,0,0);
-      ctx.drawImage(imageData,0,0);
+      console.log(buffer8);
+      try {
+        imageData.data.set(buffer8);
+        ctx.putImageData(imageData,0,0);
+      }catch(error){
+        console.log(error);
+      }
     },
     updateColor(newColor) {
       this.colorValue = newColor;
