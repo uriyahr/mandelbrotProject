@@ -15,6 +15,11 @@ export default new Router({
       component: Mandelbrot2
     },
     {
+      path: '/d3',
+      name: 'd3Test',
+      component: d3Test
+    },
+    {
       path: '/HelloWorld',
       name: 'HelloWorld',
       component: HelloWorld
