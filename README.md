@@ -39,7 +39,7 @@
   npm start
   ```
 
-## ESLint is the Enemey
+## ESLint is the Enemy
   After workign with ESLint for a while I decided to remove it from my project because of it being a bit of a hassle. For those intersted in removing it...
 
   Head into build/webpack.base.conf.js and remove/comment
@@ -116,8 +116,10 @@
 
 
 
-# Mandelbrot in p5 (Reconfig):
-npm install --save p5
+# Mandelbrot in d3: typed array pixel manipulation
+  - switch 32 bit array to 8 bit array
+
+
 
 
 

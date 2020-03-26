@@ -1,10 +1,13 @@
 <template>
   <div id="div">
     <h2>{{ title }}</h2>
-    <input type="number" v-model="scaleFactor"/>
-    <input type="number" v-model="panX"/>
-    <input type="number" v-model="panY"/>
-    <!-- <canvas class="mbCanvas" id="canvas" :width="canvasWidth" :height="canvasHeight"></canvas> -->
+    <div id="options">
+      <input type="number" v-model="scaleFactor"/>
+      <input type="number" v-model="panX"/>
+      <input type="number" v-model="panY"/>
+    </div>
+    <div id="container">
+    </div>
     <ColorPalette @update-color="updateColor" />
   </div>
 </template>
@@ -23,12 +26,12 @@ export default {
       title: "Mandelbrot Fractal Set",
       colorValue: 180,
       maxIteration: 400,
-      canvasWidth: 500,
-      canvasHeight: 500,
-      scaleFactor: 50,
+      size: window.innerWidth,
+      canvasWidth: window.innerWidth,
+      canvasHeight: window.innerHeight,
+      scaleFactor: 100,
       panX: 2, //2
       panY: 1.5, //1.5
-      chartSize: 500
     };
   },
   computed: {
@@ -68,7 +71,7 @@ export default {
 
           // ensure that the value being returned is between the value 0 and 255 && hexidecimal 0xff(decimal 255)
           //console.log((i/this.maxIteration) * 100);
-          return (i/iteration)* 100 ;
+          return (i / iteration) * 100 ;
           //alpha | blue | green | red;
           // thank you Andrew :)
             // (255 << 24) | // alpha
@@ -80,118 +83,102 @@ export default {
       return 0;
     },
     async draw() {
-      var chartSize = 500;
-      var dataSize = 500;
-
-      // check vars
-      var dataSet = d3.range(dataSize).map(
-        function(d,i){
-          return d3.range(dataSize).map(
-            function(d,i){
-              return ~~(Math.random()*255);
-            })
-      });
-      var canvas = d3.select('div').append('canvas').node();
-      var canvasWidth = 500
-      var canvasHeight = 500;
+      var canvas = d3.select('#container').append('canvas').attr('width', this.canvasWidth).attr('height', this.canvasHeight).node();
       if (canvas.getContext) { var ctx = canvas.getContext("2d");}
-      var imageData = ctx.getImageData(0,0,canvasWidth, canvasHeight);
+      var imageData = ctx.getImageData(0,0,this.canvasWidth, this.canvasHeight);
       var buffer = new ArrayBuffer(imageData.data.length);
-      var data = new Uint8ClampedArray(buffer);
-      //var data = new Uint32Array(buffer);
+      var buffer8 = new Uint8ClampedArray(buffer);
+      var data = new Uint32Array(buffer8);
+      // possibly switch y and x in nested for loops
+      for (var y = 0; y < this.canvasWidth; y++) {
+        console.log(y, this.canvasHeight);
+        for (var x = 0; x < this.canvasWidth; x++) {
+          let belongsTo = await this.inMandelbrotSet((x / this.scaleFactor - this.panX),(y / this.scaleFactor - this.panY));
+          if (belongsTo == 0) {
+            data[y * this.canvasWidth + x] = 0x00000000;
+          } else {
+            let hue = this.colorValue;
+            let saturation = 1;
+            var color = await this.hslToHex(hue,saturation,belongsTo);
+            //console.log(newHex);
+            data[y * this.canvasWidth + x] = (255 << 24) | // alpha
+            (color.b << 16) | // blue
+            (color.g << 8) | // green
+            color.r; // red;
+          }
+        }
+      }
 
-      console.log('dataSet:', dataSet);
       console.log('canvas:',canvas);
-      console.log('canvasWidth:',canvasWidth);
-      console.log('canvasHeight:',canvasHeight);
+      console.log('canvasWidth:',this.canvasWidth);
+      console.log('canvasHeight:', this.canvasHeight);
       console.log('imageData:',imageData);
       console.log('buffer:',buffer);
       console.log('data: ', data);
 
-      // possibly switch y and x in nested for loops
-      for (var y = 0; y < canvasWidth; y++) {
-        for (var x = 0; x < canvasHeight; x++) {
-         // var index = parseInt(((x + y * this.canvasWidth)),10);
-          let belongsTo = await this.inMandelbrotSet((x / this.scaleFactor - this.panX),(y / this.scaleFactor - this.panY));
-
-          let hue = this.colorValue;
-          let saturation = 100;
-          let light = belongsTo;
-          console.log(hue,saturation,light);
-          var newHex = this.hslToHex(hue,saturation,light);
-          console.log(newHex);
-          /**
-          if (belongsTo == 0) {
-            data[y * canvasWidth + x] = 0;
-            // ctx.putImageData(imageData, x, y);
-            //ctx.fillRect(x,y,1,1);
-          } else {
-            // ctx by pixel
-            let pixelColorValue = toHex(belongsTo);
-            data[y * canvasWidth + x] = 0xa5fc03;
-            // ctx.putImageData(imageData, x, y);
-            //imageData.data[index] = 'hsla('+ this.colorValue + ', 100%, ' + belongsTo + '%, 0.8)';
-            //ctx.fillStyle = 'hsla('+ this.colorValue + ', 100%, ' + belongsTo + '%, 0.8)';
-            //ctx.fillRect(x,y,1,1);
-          }
-          */
-        }
-      }
-      /**
-      console.log(data);
+     // console.log(data);
       imageData.data.set(data);
       ctx.putImageData(imageData, 0, 0);
-      */
     },
-    hslToHex(h,s,l) {
+    async hslToHex(h,s,l) {
       // convert  (this.colorValue, 100%, lightValue, 0.8) to 0xHEX
       // take in hue, saturation, light, etc --> convert to hex --> convert to integer
+      //console.log('in hslToHex...');
+
       let hue = h;
       let saturation = s;
-      let light = l;
-      console.log(hue,saturation,light);
-      // find hsla to hex
+      let light = l / ((this.maxIteration / 200) * 500);
+      //console.log(hue, saturation, light);
+      //console.log(hue,saturation,light);
       let c = (1 - Math.abs(2 * light - 1)) * saturation,
           x = c * (1 - Math.abs(hue / 60) % 2 - 1),
           m = light - c/2,
           r = 0,
           g = 0,
           b = 0;
-        if (0 <= hue && hue < 60) {
-          r = c; g = x; b = 0;
-        } else if (60 <= hue && hue < 120) {
-          r = x; g = c; b = 0;
-        } else if (120 <= hue && hue < 180) {
-          r = 0; g = c; b = x;
-        } else if (180 <= hue && hue < 240) {
-          r = 0; g = x; b = c;
-        } else if (240 <= hue && hue < 300) {
-          r = x; g = 0; b = c;
-        } else if (300 <= hue && hue < 360) {
-          r = c; g = 0; b = x;
-        }
-        r = Math.round((r + m) * 255);
-        g = Math.round((g + m) * 255);
-        b = Math.round((b + m) * 255);
-        console.log('rgb', r,g,b);
-        // convert rbg to hex
-        let hexValue = this.rbgToHex(r,g,b);
-        console.log(hexValue);
-        return this.rbgToHex(r,g,b);
+      if (0 <= hue && hue < 60) {
+        r = c; g = x; b = 0;
+      } else if (60 <= hue && hue < 120) {
+        r = x; g = c; b = 0;
+      } else if (120 <= hue && hue < 180) {
+        r = 0; g = c; b = x;
+      } else if (180 <= hue && hue < 240) {
+        r = 0; g = x; b = c;
+      } else if (240 <= hue && hue < 300) {
+        r = x; g = 0; b = c;
+      } else if (300 <= hue && hue < 360) {
+        r = c; g = 0; b = x;
+      }
+      r = Math.round((r + m) * 255);
+      g = Math.round((g + m) * 255);
+      b = Math.round((b + m) * 255);
+      //console.log('rgb', r,g,b);
+      return {
+        r: r,
+        g: g,
+        b: b,
+      }
+      // let hex = await this.rbgToHex(r,g,b); // converting rbg to hex
+      // return hex;
     },
     rbgToHex(rVal,gVal,bVal){
-      console.log('in rbgToHex()');
-      console.log(r,g,b);
-      let r = rVal.toString(16);
-      let g = gVal.toString(16);
-      let b = bVal.toString(16);
+      return ((255 << 24) | (bVal << 16) | (gVal << 8) | rVal);
+      // return (255 << 24) |
+      // (bVal << )
+      // console.log('in rbgToHex...');
+      // console.log(r,g,b);
+      // let r = rVal.toString(16);
+      // let g = gVal.toString(16);
+      // let b = bVal.toString(16);
 
-      if(r.length == 1){ r = '0' + r;}
-      if(g.length == 1){ g = '0' + g;}
-      if(b.length == 1){ b = '0' + b;}
-      let hex = '0x' + r + g + b;
-      console.log('rbgToHex',hex);
-      return hex;
+      // if(r.length == 1){ r = '0' + r;}
+      // if(g.length == 1){ g = '0' + g;}
+      // if(b.length == 1){ b = '0' + b;}
+      // let hex = '0x' + r + g + b;
+      // console.log('rbgToHex',hex);
+      // 0xFFFFFF
+      // "0xFFFFF"
+      // return hex;
     },
     updateColor(newColor) {
       this.colorValue = newColor;
@@ -213,6 +200,9 @@ export default {
     // resetMandelbrot () {
 
     // }
+  },
+  mounted() {
+    this.draw();
   }
 };
 </script>
@@ -230,5 +220,16 @@ button {
   font-family: "Raleway", sans-serif;
   padding: 15px 32px;
   margin: 4px 2px;
+}
+
+#options {
+  z-index: 100;
+}
+
+#container {
+  position: fixed;
+  z-index: -100;
+  left: 0px;
+  top: 0px;
 }
 </style>
