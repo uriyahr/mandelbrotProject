@@ -117,7 +117,8 @@ export default {
           let hue = this.colorValue;
           let saturation = 100;
           let light = belongsTo;
-          let newHex = hslToHex(hue,light,saturation);
+          console.log(hue,saturation,light);
+          var newHex = this.hslToHex(hue,saturation,light);
           console.log(newHex);
           /**
           if (belongsTo == 0) {
@@ -143,15 +144,16 @@ export default {
       */
     },
     hslToHex(h,s,l) {
-      // convert  (this.colorValue, 100%, lightValue, 0.8) to int Value
+      // convert  (this.colorValue, 100%, lightValue, 0.8) to 0xHEX
       // take in hue, saturation, light, etc --> convert to hex --> convert to integer
-      let hue = this.colorValue/100;
-      let saturation = 1;
-      let light = lightValue/100;
+      let hue = h;
+      let saturation = s;
+      let light = l;
+      console.log(hue,saturation,light);
       // find hsla to hex
-      let c = (1-Math.abs(2*light-1)) * saturation,
-          x = c * (1-Math.abs(hue/60) % 2 - 1);
-          m = light - c/2;
+      let c = (1 - Math.abs(2 * light - 1)) * saturation,
+          x = c * (1 - Math.abs(hue / 60) % 2 - 1),
+          m = light - c/2,
           r = 0,
           g = 0,
           b = 0;
@@ -168,19 +170,21 @@ export default {
         } else if (300 <= hue && hue < 360) {
           r = c; g = 0; b = x;
         }
-        r = Math.round((r+m) * 255);
-        g = Math.round((g+m)*255);
-        b = Math.round((b+m)*255);
-
+        r = Math.round((r + m) * 255);
+        g = Math.round((g + m) * 255);
+        b = Math.round((b + m) * 255);
+        console.log('rgb', r,g,b);
         // convert rbg to hex
-        let hexValue = rbgToHex(r,g,b);
+        let hexValue = this.rbgToHex(r,g,b);
         console.log(hexValue);
-        return rbgToHex(r,g,b);
+        return this.rbgToHex(r,g,b);
     },
     rbgToHex(rVal,gVal,bVal){
-      r = r.toString(16);
-      g = g.toString(16);
-      b = b.toString(16);
+      console.log('in rbgToHex()');
+      console.log(r,g,b);
+      let r = rVal.toString(16);
+      let g = gVal.toString(16);
+      let b = bVal.toString(16);
 
       if(r.length == 1){ r = '0' + r;}
       if(g.length == 1){ g = '0' + g;}
