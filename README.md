@@ -16,6 +16,12 @@
   npm init -f
   npm install --save nodemon eslint
   ```
+
+  In server run
+  '''terminal
+  eslint --init
+  '''
+
   If an error occurs with ESLint when running npm start, a few lines in package.json may need to be changed to
   ```javascript
   "start": "./node_modules/nodemon/bin nodemon.js src/app.js --exec 'npm run lint && node'",
