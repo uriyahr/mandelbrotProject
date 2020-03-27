@@ -13,7 +13,7 @@
 ## Server
   ```terminal
   mkdir server
-  npm install -f
+  npm init -f
   npm install --save nodemon eslint
   ```
   If an error occurs with ESLint when running npm start, a few lines in package.json may need to be changed to
