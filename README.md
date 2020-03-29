@@ -1,5 +1,4 @@
-# mandelbrotProject
-
+# mandelbrotProject (under production)
 ## Client
   ```terminal
   npm install -g @vue/cli-init
